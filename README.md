@@ -56,8 +56,9 @@ So, printed in a DIV, it would look like this:
 2 1/2 cups non-dairy milk (soy, almond, oat, etc.)
 ```
 
-## My To Do List
+## My to-do list
 
+- [ ] Create Composer package
 - [ ] Interfaces for difference kinds of input, most importantly, an API  
 - [ ] Add more items to the substitutions dictionary and more units to the units list
 - [ ] Accept decimal quantities

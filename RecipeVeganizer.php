@@ -26,17 +26,17 @@ class RecipeVeganizer {
     
         'milk' => [
             'replaceStr' => 'non-dairy milk (soy, almond, oat, etc.)',
-            'ratio' => 2
+            'ratio' => 1
         ],
     
         'cream' => [
             'replaceStr' => 'coconut cream',
-            'ratio' => 2
+            'ratio' => 1
         ],
     
         'heavy cream' => [
             'replaceStr' => 'coconut cream',
-            'ratio' => 2
+            'ratio' => 1
         ],
     
         'honey' => [

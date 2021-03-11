@@ -124,7 +124,21 @@ class RecipeVeganizer {
     }
 
     /**
-     * The main function of this class. Takes a recipe... and veganizes it!
+     * The main function of this class. Takes a recipe's ingredients list... 
+     * and veganizes it!
+     * 
+     * IMPORTANT: Expects the ingredients list to be in the form commonly found 
+     * in recipes, like this:
+     * 
+     * 3 cups cake flour
+     * 1 tablespoon baking powder
+     * 3/4 teaspoon salt
+     * 2 sticks unsalted butter
+     * 1 1/2 cups granulated sugar
+     * 1 1/2 teaspoons vanilla extract
+     * 3 large eggs
+     * 1 1/4 cups whole milk 
+     * 
      * Output is in HTML.
      *
      * @param string $recipeToVeganize

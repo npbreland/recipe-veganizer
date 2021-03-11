@@ -92,7 +92,7 @@ class RecipeVeganizer {
     ];
 
     /**
-     * This method rounds a decimal result to the closest "friednly fraction,"
+     * This method rounds a decimal result to the closest "friendly fraction,"
      * that is, one that is commonly found in recipes. For example, I've never seen
      * a 0.568 cup measuring cup; this method would round that to 1/2 cup, which
      * is probably close enough for most recipes.

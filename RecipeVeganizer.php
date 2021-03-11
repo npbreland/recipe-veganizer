@@ -3,6 +3,11 @@
 
 class RecipeVeganizer {
     
+    /**
+     * Dictionary of non-vegan items with their substitutes and ratios
+     *
+     * @var array
+     */
     public static $subsDictionary = [
         'butter' => [
             'replaceStr' => 'vegan butter',
@@ -40,6 +45,11 @@ class RecipeVeganizer {
         ]
     ];
 
+    /**
+     * List of units to expect
+     *
+     * @var array
+     */
     public static $units = [
         'ounces', 
         'oz.', 
@@ -81,7 +91,16 @@ class RecipeVeganizer {
         'grams', 
     ];
 
-    public function roundToCommonFractions($decimal)
+    /**
+     * This method rounds a decimal result to the closest "friednly fraction,"
+     * that is, one that is commonly found in recipes. For example, I've never seen
+     * a 0.568 cup measuring cup; this method would round that to 1/2 cup, which
+     * is probably close enough for most recipes.
+     *
+     * @param float $decimal
+     * @return mixed
+     */
+    public function roundToCommonFractions(float $decimal)
     {
         if ($decimal < 0.125) {
             return 0;
@@ -104,7 +123,14 @@ class RecipeVeganizer {
         return $fraction;
     }
 
-    public function veganize($recipeToVeganize)
+    /**
+     * The main function of this class. Takes a recipe... and veganizes it!
+     * Output is in HTML.
+     *
+     * @param string $recipeToVeganize
+     * @return string
+     */
+    public function veganize(string $recipeToVeganize)
     {
         // Split input string into lines
         $recipeLines = preg_split('/(\n|\r)/', $recipeToVeganize, -1, PREG_SPLIT_NO_EMPTY);
@@ -218,7 +244,7 @@ class RecipeVeganizer {
             }
 
             $qtyWhole = floor($qty);
-            $qtyDecimal = $qty - $qtyWhole;
+            $qtyDecimal = floatval($qty - $qtyWhole);
 
             // Convert to fraction notation.
             $fraction = $this->roundToCommonFractions($qtyDecimal);

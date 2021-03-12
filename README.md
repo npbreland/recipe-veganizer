@@ -59,6 +59,7 @@ So, printed in a DIV, it would look like this:
 ## My to-do list
 
 - [ ] Create Composer package
+- [ ] Present different substitutions based on a "nutrition level" input. For example, a recipe which calls for cream cheese could be replaced with avocado (nutrition level 1)or vegan cream cheese (lower nutrition level)
 - [ ] Interfaces for difference kinds of input, most importantly, an API  
 - [ ] Add more items to the substitutions dictionary and more units to the units list
 - [ ] Accept decimal quantities

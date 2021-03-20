@@ -42,7 +42,49 @@ class RecipeVeganizer {
         'honey' => [
             'replaceStr' => 'maple syrup/agave nectar',
             'ratio' => 1
-        ]
+        ],
+
+        'ground beef' => [
+            'replaceStr' => 'hydrated TVP',
+            'ratio' => 1
+        ],
+
+        'ground turkey' => [
+            'replaceStr' => 'hydrated TVP',
+            'ratio' => 1
+        ],
+
+        'steak' => [
+            'replaceStr' => 'tofu steak',
+            'ratio' => 1
+        ],
+
+        'parmesan' => [
+            'replaceStr' => 'vegan parmesan',
+            'ratio' => 1
+        ],
+
+        'cream cheese' => [
+            'replaceStr' => 'vegan cream cheese',
+            'ratio' => 1
+        ],
+
+        'cheese' => [
+            'replaceStr' => 'vegan cheese',
+            'ratio' => 1
+        ],
+
+        'pulled pork' => [
+            'replaceStr' => 'pulled jackfruit',
+            'ratio' => 1
+        ],
+
+        'sausage' => [
+            'replaceStr' => 'vegan sausage',
+            'ratio' => 1
+        ],
+
+        
     ];
 
     /**

@@ -16,12 +16,14 @@ class RecipeVeganizer {
     
         'eggs' => [
             'replaceStr' => 'flax eggs',
-            'ratio' => 1
+            'ratio' => 1,
+            'prep' => '1 Tbsp ground flaxseed + 2 1/2 Tbsp water. Stir together and allow 5 minutes to thicken.'
         ],
     
         'egg' => [
             'replaceStr' => 'flax egg',
-            'ratio' => 1
+            'ratio' => 1,
+            'prep' => '1 Tbsp ground flaxseed + 2 1/2 Tbsp water. Stir together and allow 5 minutes to thicken.'
         ],
     
         'milk' => [
@@ -279,7 +281,8 @@ class RecipeVeganizer {
                     return [
                         'qty' => $newQty,
                         'unit' => $line['unit'],
-                        'item' => $subTo
+                        'item' => $subTo,
+                        'prep' => $valArr['prep']
                     ];
                 }
             }

@@ -25,10 +25,15 @@ Then, instantiate the class and call veganize(), passing your list as the parame
 
 ```php
 $veganizer = new RecipeVeganizer();
-$veganizedRecipeText = $veganizer->veganize($recipe);
+$veganizer->veganize($recipe);
 ```
 
-The output will be in HTML. Each line will end in HTML carriage return and line feed entities `&#13;&#10;`
+Finally, choose an output. There are now two options: HTML or JSON. For the HTML, each line will end in HTML carriage return and line feed entities `&#13;&#10;`
+
+```php
+$veganizedRecipeHtml = $veganizer->getHtml();
+$veganizedRecipeJson = $veganizer->getJson();
+```
 
 e.g.
 

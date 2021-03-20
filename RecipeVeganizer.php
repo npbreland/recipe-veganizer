@@ -356,7 +356,7 @@ class RecipeVeganizer {
      *
      * @return string
      */
-    public function getHtml()
+    public function getHtml(): string
     {
         // Build each line
         $this->recipeLines = array_map(function($line){
@@ -371,7 +371,7 @@ class RecipeVeganizer {
     /**
      * Returns the recipe lines encoded in JSON.
      *
-     * @return void
+     * @return string|false
      */
     public function getJson()
     {

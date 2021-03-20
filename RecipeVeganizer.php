@@ -135,6 +135,8 @@ class RecipeVeganizer {
         'grams', 
     ];
 
+    protected $recipeLines;
+
     /**
      * This method rounds a decimal result to the closest "friendly fraction,"
      * that is, one that is commonly found in recipes. For example, I've never seen
@@ -168,8 +170,11 @@ class RecipeVeganizer {
     }
 
     /**
-     * The main function of this class. Takes a recipe's ingredients list... 
-     * and veganizes it!
+     * The main method of this class. Takes a recipe's ingredients list... 
+     * and veganizes it! The method splits the recipe into an array of recipe 
+     * lines, each of which contains a quantity, unit, and item element.
+     * 
+     * See RecipeVeganizer::getHtml() or RecipeVeganizer::getJson() for output.
      * 
      * IMPORTANT: Expects the ingredients list to be in the form commonly found 
      * in recipes, like this:
@@ -182,19 +187,43 @@ class RecipeVeganizer {
      * 1 1/2 teaspoons vanilla extract
      * 3 large eggs
      * 1 1/4 cups whole milk 
-     * 
-     * Output is in HTML.
      *
      * @param string $recipeToVeganize
-     * @return string
+     * @return void
      */
     public function veganize(string $recipeToVeganize)
     {
-        // Split input string into lines
-        $recipeLines = preg_split('/(\n|\r)/', $recipeToVeganize, -1, PREG_SPLIT_NO_EMPTY);
+        /* The following methods have been created to make this main method 
+        easier to read. They must be carried out in the order they are given 
+        here, as each method depends on the last. */
+        
+        $this->splitInputIntoLines($recipeToVeganize);
+        $this->splitLinesIntoQtyAndItemPieces();
+        $this->separateUnitFromItemString();        
+        $this->substituteAndAdjustQuantities();
+        $this->convertDecimalsToFractions();
+    }
 
+    /**
+     * Splits the input recipe into lines.
+     *
+     * @param string $recipeToVeganize
+     * @return void
+     */
+    private function splitInputIntoLines(string $recipeToVeganize)
+    {
+        $this->recipeLines = preg_split('/(\n|\r)/', $recipeToVeganize, -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    /**
+     * Splits the recipe lines into an array of two elements: quantity and item.
+     *
+     * @return void
+     */
+    private function splitLinesIntoQtyAndItemPieces()
+    {
         // Split lines into qty and item pieces
-        $recipeLines = array_map(function($line) {
+        $this->recipeLines = array_map(function($line) {
             
             $pieces = preg_split('/^(\d+\/\d+|\d+(\s\d+\/\d+)?)/', $line, -1, PREG_SPLIT_OFFSET_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
@@ -205,45 +234,20 @@ class RecipeVeganizer {
             $qty = substr($line, 0, $offset);
             
             return [ 'qty' => $qty, 'item' => $str ]; 
-        }, $recipeLines);
+        }, $this->recipeLines);
+    }
 
-
-        // Convert the mixed numbers to decimals so we can do math.
-        $recipeLines = array_map(function($line) {
-
-            $qty = $line['qty'];
-
-            preg_match('/\d+\/\d+/', $qty, $matches, PREG_OFFSET_CAPTURE);
-
-            // If no matches, continue on.
-            if (count($matches) === 0) {
-                return $line;
-            }
-
-            // Only get the first match
-            $match = $matches[0][0];
-            $offset = $matches[0][1];
-
-            $decimal = 0;
-            // The fraction is offset, which means we have a whole number
-            if ($offset > 0) {
-                $decimal = intval(substr($qty, 0, $offset));
-            }
-
-            $fractionPieces = explode('/', $match);
-            $numer = $fractionPieces[0]; 
-            $denom = $fractionPieces[1];
-
-            $decimal += $numer / $denom;
-
-            $line['qty'] = $decimal;
-
-            return $line;
-
-        }, $recipeLines);
-
-        // Further split item string into unit and item pieces
-        $recipeLines = array_map(function($line){
+    /**
+     * Uses the RecipeVeganizer::$units dictionary to find the unit in the item
+     * string for each line in the recipe, splits the item string into 'unit' and
+     * 'item' pieces, and then replaces the existing 'item' piece with the two 
+     * new pieces.
+     *
+     * @return void
+     */
+    private function separateUnitFromItemString()
+    {
+        $this->recipeLines = array_map(function($line){
             $itemStr = $line['item'];
             foreach (self::$units as $unit) {
                 
@@ -262,10 +266,20 @@ class RecipeVeganizer {
             $line['unit'] = '';
             return $line;
             
-        }, $recipeLines);
+        }, $this->recipeLines);
+    }
 
-        // Do the replacement and adjust the quantities
-        $recipeLines = array_map(function($line){
+    /**
+     * For each line in the recipe, lookup the item in 
+     * RecipeVeganizer::$subsDictionary, and replace the item with the substitute
+     * if one is found. At the same time, adjust the quantity based on the ratio
+     * provided in the dictionary.
+     *
+     * @return void
+     */
+    private function substituteAndAdjustQuantities()
+    {
+        $this->recipeLines = array_map(function($line){
 
             $itemStr = $line['item'];
             $qty = $line['qty'];
@@ -290,10 +304,19 @@ class RecipeVeganizer {
             // We didn't find a match - so just return it unchanged.
             return $line;
 
-        }, $recipeLines);
+        }, $this->recipeLines);
+    }
 
+    /**
+     * Converts decimals in the recipe quantities to common fractions used in
+     * baking.
+     *
+     * @return void
+     */
+    private function convertDecimalsToFractions()
+    {
         // Convert decimals back to fractions
-        $recipeLines = array_map(function($line) {
+        $this->recipeLines = array_map(function($line) {
 
             $qty = $line['qty'];
             
@@ -325,17 +348,34 @@ class RecipeVeganizer {
             $line['qty'] = $qty;
             return $line;
 
-        }, $recipeLines);
+        }, $this->recipeLines);
+    }
 
-        // Finally, let's build the response HTML
-        $recipeLines = array_map(function($line){
+    /**
+     * Returns an HTML string of the recipe.
+     *
+     * @return string
+     */
+    public function getHtml()
+    {
+        // Build each line
+        $this->recipeLines = array_map(function($line){
             return implode(' ', [ $line['qty'], $line['unit'], $line['item'] ]);
-        }, $recipeLines);
+        }, $this->recipeLines);
 
         // Add html line break characters.
-        $responseText = implode('&#13;&#10;', $recipeLines);
+        $response = implode('&#13;&#10;', $this->recipeLines);
+        return $response;
+    }
 
-        return $responseText;
+    /**
+     * Returns the recipe lines encoded in JSON.
+     *
+     * @return void
+     */
+    public function getJson()
+    {
+        return json_encode($this->recipeLines);
     }
 }
 

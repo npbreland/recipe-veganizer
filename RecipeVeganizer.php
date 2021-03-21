@@ -86,7 +86,11 @@ class RecipeVeganizer {
             'ratio' => 1
         ],
 
-        
+        'bacon' => [
+            'replaceStr' => 'smoked tofu',
+            'ratio' => 1
+        ],
+
     ];
 
     /**
